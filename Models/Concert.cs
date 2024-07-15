@@ -19,6 +19,7 @@ namespace concert_booking_service_csharp.Models
         // Navigation
         public ICollection<ConcertDate> ConcertDates { get; set; }
 
+        // Navigation
         public ICollection<Performer> Performers { get; set; }
 
     }

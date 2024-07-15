@@ -7,7 +7,7 @@ namespace concert_booking_service_csharp.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public string Label { get; set; }
 
@@ -17,7 +17,10 @@ namespace concert_booking_service_csharp.Models
 
         public double Cost { get; set; }
 
+        // Foreign
+        public long? BookingId { get; set; }
+
         // Navigation
-        public Booking Booking { get; set; }
+        public Booking? Booking { get; set; }
     }
 }

@@ -9,9 +9,12 @@ namespace concert_booking_service_csharp.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
+        // Foreign
         public long ConcertId { get; set; }
 
         public DateTime Date { get; set; }
 
+        // Navigation
+        public Concert Concert { get; set; }
     }
 }
