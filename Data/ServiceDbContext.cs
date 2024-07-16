@@ -14,20 +14,5 @@ namespace concert_booking_service_csharp.Data
         public DbSet<Seat> Seats { get; set; }
         public DbSet<User> Users { get; set; }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<Booking>()
-        //        .HasMany(e => e.Seats)
-        //        .WithOne(e => e.Booking)
-        //        .HasForeignKey(e => e.BookingId)
-        //        .IsRequired(false);
-
-        //    modelBuilder.Entity<Concert>()
-        //        .HasMany(e => e.ConcertDates)
-        //        .WithOne(e => e.Concert)
-        //        .HasForeignKey(e => e.ConcertId)
-        //        .IsRequired();
-
-        //}
     }
 }
