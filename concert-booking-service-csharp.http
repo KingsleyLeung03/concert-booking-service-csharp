@@ -1,6 +1,0 @@
-@concert_booking_service_csharp_HostAddress = http://localhost:5186
-
-GET {{concert_booking_service_csharp_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
