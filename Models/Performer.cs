@@ -7,7 +7,7 @@ namespace concert_booking_service_csharp.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public long PerformerId { get; set; }
 
         public string Name { get; set; }
 
@@ -17,7 +17,6 @@ namespace concert_booking_service_csharp.Models
 
         [MaxLength(1000)]
         public string Blurb { get; set; }
-
 
         // Navigation
         public ICollection<Concert> Concerts { get; set; }

@@ -7,7 +7,7 @@ namespace concert_booking_service_csharp.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public long UserId { get; set; }
 
         [Required]
         public string UserName { get; set; }

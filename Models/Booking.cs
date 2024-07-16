@@ -7,7 +7,7 @@ namespace concert_booking_service_csharp.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public long BookingId { get; set; }
 
         // Foreign
         public long UserId { get; set; }
@@ -15,7 +15,13 @@ namespace concert_booking_service_csharp.Models
         // Foreign
         public long ConcertId { get; set; }
 
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
+
+        // Navigation
+        public User User { get; set; }
+
+        // Navigation
+        public Concert Concert { get; set; }
 
         // Navigation
         public ICollection<Seat> Seats { get; set; }
