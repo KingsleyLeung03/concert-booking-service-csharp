@@ -19,7 +19,7 @@ namespace concert_booking_service_csharp.Data
         Concert GetConcertById(long concertId);
         IEnumerable<Concert> GetConcertsByTitle(string title);
         IEnumerable<Concert> GetConcertsByBlurb(string blurb);
-        IEnumerable<Concert> GetConcertsByTitleOrBlurbOrPerformer(string titleOrBlurbOrPerformer);
+        IEnumerable<Concert> GetConcertsBySearch(string search);
         Concert GetConcertByDate(DateTime date);
         Concert GetConcertByConcertDate(long concertDateId);
         IEnumerable<Concert> GetConcertsByPerformer(long performerId);
@@ -30,16 +30,41 @@ namespace concert_booking_service_csharp.Data
         // ConcertDate
         IEnumerable<ConcertDate> GetAllConcertDates();
         ConcertDate GetConcertDateById(long concertDateId);
-        IEnumerable<ConcertDate> GetConcertDatesByConcert(Concert concert);
+        IEnumerable<ConcertDate> GetConcertDatesByConcert(long concertId);
         ConcertDate GetConcertDateByDate(DateTime date);
+        Concert AddConcertDate(ConcertDate concertDate);
+        Concert UpdateConcertDate(ConcertDate concertDate);
+        void DeleteConcertDate(ConcertDate concertDate);
+
         // Performer
+        IEnumerable<Performer> GetAllPerformers();
+        Performer GetPerformerById(long performerId);
+        IEnumerable<Performer> GetPerformersByName(string name);
+        IEnumerable<Performer> GetPerformersByGenre(string genre);
+        IEnumerable<Performer> GetPerformersByBlurb(string blurb);
+        IEnumerable<Performer> GetPerformersBySearch(string search);
+        IEnumerable<Performer> GetPerformersByConcert(long concertId);
+        Performer AddPerformer(Performer performer);
+        Performer UpdatePerformer(Performer performer);
+        void DeletePerformer(Performer performer);
 
         // Seat
+        IEnumerable<Seat> GetAllSeats();
+        Seat GetSeatById(long seatId);
+        IEnumerable<Seat> GetSeatsByDate(DateTime date);
+        Seat GetSeatByDateLabel(DateTime date,  string label);
+        IEnumerable<Seat> GetSeatsByDateIsBooked(DateTime date, Boolean isBooked);
+        IEnumerable<Seat> GetSeatsByBooking(long bookingId);
+        Seat AddSeat(Seat seat);
+        Seat UpdateSeat(Seat seat);
+        void DeleteSeat(Seat seat);
 
         // User
         IEnumerable<User> GetAllUsers();
         User GetUserByUserName(string userName);
         User AddUser(User user);
+        User UpdateUser(User user);
+        void DeleteUser(User user);
         
     }
 }
