@@ -65,6 +65,13 @@ namespace concert_booking_service_csharp.Data
         User AddUser(User user);
         User UpdateUser(User user);
         void DeleteUser(User user);
-        
+
+        // User with hashed password
+        User AddUserHashed(string userName, string password);
+
+        // Authentication
+        bool ValidUserLogin(string userName, string password);
+        bool ValidAdminLogin(string userName, string password);
+
     }
 }

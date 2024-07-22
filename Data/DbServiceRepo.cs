@@ -1,4 +1,5 @@
 ﻿using concert_booking_service_csharp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
@@ -8,10 +9,12 @@ namespace concert_booking_service_csharp.Data
     public class DbServiceRepo : IServiceRepo
     {
         private readonly ServiceDbContext _dbContext;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public DbServiceRepo(ServiceDbContext dbContext)
+        public DbServiceRepo(ServiceDbContext dbContext, IPasswordHasher<User> passwordHasher)
         {
             _dbContext = dbContext;
+            _passwordHasher = passwordHasher;
         }
 
         // Booking
@@ -304,14 +307,35 @@ namespace concert_booking_service_csharp.Data
             _dbContext.SaveChanges();
         }
 
+        // User with hashed password
+        public User AddUserHashed(string userName, string password)
+        {
+            User user = new User { UserName = userName, Password = password, Version = 1 };
+            string hashedPassword = _passwordHasher.HashPassword(user, password);
+            user.Password = hashedPassword;
+            EntityEntry<User> e = _dbContext.Users.Add(user);
+            User u = e.Entity;
+            _dbContext.SaveChanges();
+            return u;
+        }
+
         // Authentication
         public bool ValidUserLogin(string userName, string password)
         {
-            User u = _dbContext.Users.FirstOrDefault(e => e.UserName == userName && e.Password == password);
-            if (u == null)
+            User user = _dbContext.Users.FirstOrDefault(e => e.UserName == userName);
+            if (user == null)
                 return false;
             else
-                return true;
+            {
+                string hashedPassword = _passwordHasher.HashPassword(user, password);
+                return hashedPassword == user.Password;
+            }
+                
+        }
+
+        public bool ValidAdminLogin(string userName, string password)
+        {
+            throw new NotImplementedException();
         }
     }
 }
