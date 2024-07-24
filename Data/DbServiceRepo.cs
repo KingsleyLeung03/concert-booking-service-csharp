@@ -20,27 +20,38 @@ namespace concert_booking_service_csharp.Data
         // Admin
         public IEnumerable<Admin> GetAllAdmins()
         {
-            throw new NotImplementedException();
+            IEnumerable<Admin> admins = _dbContext.Admins.ToList();
+            return admins;
         }
 
         public Admin GetAdminByUserName(string userName)
         {
-            throw new NotImplementedException();
+            Admin admin = _dbContext.Admins.FirstOrDefault(e => e.UserName == userName);
+            return admin;
         }
 
         public Admin AddAdmin(Admin admin)
         {
-            throw new NotImplementedException();
+            EntityEntry<Admin> e = _dbContext.Admins.Add(admin);
+            Admin a = e.Entity;
+            _dbContext.SaveChanges();
+            return a;
         }
 
         public Admin UpdateAdmin(Admin admin)
         {
-            throw new NotImplementedException();
+            EntityEntry<Admin> e = _dbContext.Admins.Attach(admin);
+            e.State = EntityState.Modified;
+            Admin a = e.Entity;
+            _dbContext.SaveChanges();
+            return a;
         }
 
         public void DeleteAdmin(Admin admin)
         {
-            throw new NotImplementedException();
+            EntityEntry<Admin> e = _dbContext.Admins.Attach(admin);
+            e.State = EntityState.Deleted;
+            _dbContext.SaveChanges();
         }
 
         // Booking
