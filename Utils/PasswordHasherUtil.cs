@@ -2,7 +2,7 @@
 
 namespace concert_booking_service_csharp.Utils
 {
-    public class PasswordHasher
+    public class PasswordHasherUtil
     {
         public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
