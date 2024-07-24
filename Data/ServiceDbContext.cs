@@ -7,6 +7,7 @@ namespace concert_booking_service_csharp.Data
     {
         public ServiceDbContext(DbContextOptions<ServiceDbContext> options) : base(options) { }
 
+        public DbSet<Admin> Admin { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Concert> Concerts { get; set; }
         public DbSet<ConcertDate> ConcertDates { get; set; }

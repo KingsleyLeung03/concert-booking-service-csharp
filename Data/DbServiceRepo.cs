@@ -17,6 +17,32 @@ namespace concert_booking_service_csharp.Data
             _passwordHasher = passwordHasher;
         }
 
+        // Admin
+        public IEnumerable<Admin> GetAllAdmins()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Admin GetAdminByUserName(string userName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Admin AddAdmin(Admin admin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Admin UpdateAdmin(Admin admin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteAdmin(Admin admin)
+        {
+            throw new NotImplementedException();
+        }
+
         // Booking
         public IEnumerable<Booking> GetAllBookings()
         {
@@ -307,30 +333,19 @@ namespace concert_booking_service_csharp.Data
             _dbContext.SaveChanges();
         }
 
-        // User with hashed password
-        public User AddUserHashed(string userName, string password)
-        {
-            User user = new User { UserName = userName, Password = password, Version = 1 };
-            string hashedPassword = _passwordHasher.HashPassword(user, password);
-            user.Password = hashedPassword;
-            EntityEntry<User> e = _dbContext.Users.Add(user);
-            User u = e.Entity;
-            _dbContext.SaveChanges();
-            return u;
-        }
-
         // Authentication
         public bool ValidUserLogin(string userName, string password)
         {
-            User user = _dbContext.Users.FirstOrDefault(e => e.UserName == userName);
-            if (user == null)
-                return false;
-            else
-            {
-                string hashedPassword = _passwordHasher.HashPassword(user, password);
-                return hashedPassword == user.Password;
-            }
-                
+            //User user = _dbContext.Users.FirstOrDefault(e => e.UserName == userName);
+            //if (user == null)
+            //    return false;
+            //else
+            //{
+            //    string hashedPassword = _passwordHasher.HashPassword(user, password);
+            //    return hashedPassword == user.Password;
+            //}
+
+            throw new NotImplementedException();
         }
 
         public bool ValidAdminLogin(string userName, string password)

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using concert_booking_service_csharp.Data;
 
@@ -10,9 +11,11 @@ using concert_booking_service_csharp.Data;
 namespace concert_booking_service_csharp.Migrations
 {
     [DbContext(typeof(ServiceDbContext))]
-    partial class ServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240724042906_24072024DatabaseUpdate")]
+    partial class _24072024DatabaseUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -34,7 +37,7 @@ namespace concert_booking_service_csharp.Migrations
 
             modelBuilder.Entity("concert_booking_service_csharp.Models.Admin", b =>
                 {
-                    b.Property<long>("AdminId")
+                    b.Property<long>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -54,7 +57,7 @@ namespace concert_booking_service_csharp.Migrations
                     b.Property<long>("Version")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("AdminId");
+                    b.HasKey("UserId");
 
                     b.ToTable("Admin");
                 });

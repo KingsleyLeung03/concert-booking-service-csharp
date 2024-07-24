@@ -4,6 +4,13 @@ namespace concert_booking_service_csharp.Data
 {
     public interface IServiceRepo
     {
+        // Admin
+        IEnumerable<Admin> GetAllAdmins();
+        Admin GetAdminByUserName(string userName);
+        Admin AddAdmin(Admin admin);
+        Admin UpdateAdmin(Admin admin);
+        void DeleteAdmin(Admin admin);
+
         // Booking
         IEnumerable<Booking> GetAllBookings();
         Booking GetBookingById(long bookingId);
@@ -65,9 +72,6 @@ namespace concert_booking_service_csharp.Data
         User AddUser(User user);
         User UpdateUser(User user);
         void DeleteUser(User user);
-
-        // User with hashed password
-        User AddUserHashed(string userName, string password);
 
         // Authentication
         bool ValidUserLogin(string userName, string password);
