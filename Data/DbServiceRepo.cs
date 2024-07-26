@@ -1,20 +1,20 @@
 ﻿using concert_booking_service_csharp.Models;
+using concert_booking_service_csharp.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
+using System.Xml.Linq;
 
 namespace concert_booking_service_csharp.Data
 {
     public class DbServiceRepo : IServiceRepo
     {
         private readonly ServiceDbContext _dbContext;
-        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public DbServiceRepo(ServiceDbContext dbContext, IPasswordHasher<User> passwordHasher)
+        public DbServiceRepo(ServiceDbContext dbContext)
         {
             _dbContext = dbContext;
-            _passwordHasher = passwordHasher;
         }
 
         // Admin
@@ -347,21 +347,18 @@ namespace concert_booking_service_csharp.Data
         // Authentication
         public bool ValidUserLogin(string userName, string password)
         {
-            //User user = _dbContext.Users.FirstOrDefault(e => e.UserName == userName);
-            //if (user == null)
-            //    return false;
-            //else
-            //{
-            //    string hashedPassword = _passwordHasher.HashPassword(user, password);
-            //    return hashedPassword == user.Password;
-            //}
-
-            throw new NotImplementedException();
+            User user = _dbContext.Users.FirstOrDefault(e => e.UserName == userName);
+            if (user != null)
+                return PasswordHasherUtil.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt);
+            return false;
         }
 
         public bool ValidAdminLogin(string userName, string password)
         {
-            throw new NotImplementedException();
+            Admin admin = _dbContext.Admins.FirstOrDefault(e => e.UserName == userName);
+            if (admin != null)
+                return PasswordHasherUtil.VerifyPasswordHash(password, admin.PasswordHash, admin.PasswordSalt);
+            return false;
         }
     }
 }
