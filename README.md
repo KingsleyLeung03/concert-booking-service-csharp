@@ -24,12 +24,12 @@ Clients can see concert and performer information and ask about available seats,
 - [ ] Get Booking by ID  
 - [ ] Get Seats for a Specific Date with Status Condition  
 - [ ] Admin Features  
-- ... more will be add later.
+- ... more will be added later.
 
 ## Endpoints  
 - `POST /concert-service/Register`. Register a new user account. UserName and Password are required. The HTTP response message should have a status code of either 200 or 400, depending on whether the account is created.  
 - `POST /concert-service/TestAuth`. Login to a user account. The HTTP response message should have a status code of either 200 or 401, depends on whether the account is successfully logged in.  
-- ... more will be add later.
+- ... more will be added later.
 
 ## Test
 A user is already created for testing.  
