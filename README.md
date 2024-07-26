@@ -36,5 +36,5 @@ Clients can see concert and performer information and ask about available seats,
 
 ## Test
 A user is already created for testing.  
-UserName: `test`  
+UserName: `user`  
 Password: `pa55word`  
