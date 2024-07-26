@@ -1,3 +1,8 @@
+using concert_booking_service_csharp.Data;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
+using concert_booking_service_csharp.Handlers;
 
 namespace concert_booking_service_csharp;
 
@@ -6,13 +11,27 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
-        builder.Services.AddAuthorization();
+        builder.Services.AddControllers();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services
+            .AddAuthentication()
+            .AddScheme<AuthenticationSchemeOptions, ServiceAuthHandler>("Authentication", null);
+        builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlite(builder.Configuration["ServiceDbConnection"]));
+
+        builder.Services.AddScoped<IServiceRepo, DbServiceRepo>();
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("UserOnly", policy => policy.RequireClaim("user"));
+            options.AddPolicy("AdminOnly", policy => policy.RequireClaim("admin"));
+            options.AddPolicy("AuthOnly", policy =>
+            {
+                policy.RequireAssertion(context => context.User.HasClaim(c => (c.Type == "user" || c.Type == "admin")));
+            });
+        });
 
         var app = builder.Build();
 
@@ -24,29 +43,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-        {
-            var forecast =  Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                {
-                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    TemperatureC = Random.Shared.Next(-20, 55),
-                    Summary = summaries[Random.Shared.Next(summaries.Length)]
-                })
-                .ToArray();
-            return forecast;
-        })
-        .WithName("GetWeatherForecast")
-        .WithOpenApi();
-
+        app.MapControllers();
         app.Run();
     }
 }
