@@ -5,8 +5,8 @@ namespace concert_booking_service_csharp.Dtos
     public class UserDTO
     {
         [Required]
-        public string userName { get; set; }
+        public string UserName { get; set; }
         [Required]
-        public string password { get; set; }
+        public string Password { get; set; }
     }
 }

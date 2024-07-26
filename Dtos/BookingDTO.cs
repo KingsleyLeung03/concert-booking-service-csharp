@@ -2,9 +2,9 @@
 {
     public class BookingDTO
     {
-        public long concertId { get; set; }
-        public DateTime date { get; set; }
-        public List<SeatDTO> seats { get; set; }
+        public long ConcertId { get; set; }
+        public DateTime Date { get; set; }
+        public List<SeatDTO> Seats { get; set; }
 
     }
 }

@@ -2,12 +2,12 @@
 {
     public class ConcertDTO
     {
-        public long concertId {get; set;}
-        public string title {get; set;}
-        public string imageName {get; set;}
-        public string blurb {get; set;}
-        public List<DateTime> dates {get; set;}
-        public List<PerformerDTO> performers {get; set;}
+        public long ConcertId {get; set;}
+        public string Title {get; set;}
+        public string ImageName {get; set;}
+        public string Blurb {get; set;}
+        public List<DateTime> Dates {get; set;}
+        public List<PerformerDTO> Performers {get; set;}
 
     }
 }

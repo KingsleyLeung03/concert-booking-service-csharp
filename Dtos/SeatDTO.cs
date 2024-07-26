@@ -2,7 +2,7 @@
 {
     public class SeatDTO
     {
-        public string label { get; set; }
-        public double priced { get; set; }
+        public string Label { get; set; }
+        public double Price { get; set; }
     }
 }

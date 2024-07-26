@@ -5,11 +5,11 @@ namespace concert_booking_service_csharp.Dtos
 {
     public class PerformerDTO : IComparable<PerformerDTO>
     {
-        public long performerId { get; set; }
-        public string name { get; set; }
-        public string imageName { get; set; }
-        public Genre genre { get; set; }
-        public string blurb { get; set; }
+        public long PerformerId { get; set; }
+        public string Name { get; set; }
+        public string ImageName { get; set; }
+        public Genre Genre { get; set; }
+        public string Blurb { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -19,20 +19,20 @@ namespace concert_booking_service_csharp.Dtos
 
             PerformerDTO other = (PerformerDTO)obj;
 
-            return performerId == other.performerId &&
-                   name == other.name &&
-                   imageName == other.imageName &&
-                   genre == other.genre;
+            return PerformerId == other.PerformerId &&
+                   Name == other.Name &&
+                   ImageName == other.ImageName &&
+                   Genre == other.Genre;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(performerId, name, imageName, genre);
+            return HashCode.Combine(PerformerId, Name, ImageName, Genre);
         }
 
         public int CompareTo(PerformerDTO other)
         {
-            return other.name.CompareTo(name);
+            return other.Name.CompareTo(Name);
         }
     }
 }

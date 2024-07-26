@@ -2,9 +2,9 @@
 {
     public class ConcertSummaryDTO
     {
-        public long concertId { get; set; }
-        public string title { get; set; }
-        public string imageName { get; set; }
+        public long ConcertId { get; set; }
+        public string Title { get; set; }
+        public string ImageName { get; set; }
 
     }
 }
