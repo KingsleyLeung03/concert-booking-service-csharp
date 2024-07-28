@@ -5,6 +5,7 @@ using concert_booking_service_csharp.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace concert_booking_service_csharp.Controllers
 {
@@ -96,6 +97,7 @@ namespace concert_booking_service_csharp.Controllers
                 {
                     dates.Add(concertDate.Date);
                 }
+
                 ICollection<Performer> performers = concert.Performers;
                 List<PerformerDTO> performerDTOs = new List<PerformerDTO>();
                 foreach (Performer performer in performers)
@@ -109,6 +111,7 @@ namespace concert_booking_service_csharp.Controllers
                         Blurb = performer.Blurb
                     });
                 }
+
                 ConcertDTO concertDTO = new ConcertDTO
                 {
                     ConcertId = concert.ConcertId,
@@ -134,6 +137,7 @@ namespace concert_booking_service_csharp.Controllers
                 {
                     dates.Add(concertDate.Date);
                 }
+
                 ICollection<Performer> performers = concert.Performers;
                 List<PerformerDTO> performerDTOs = new List<PerformerDTO>();
                 foreach (Performer performer in performers)
@@ -147,6 +151,7 @@ namespace concert_booking_service_csharp.Controllers
                         Blurb = performer.Blurb 
                     });
                 }
+
                 ConcertDTO concertDTO = new ConcertDTO 
                 { 
                     ConcertId = concert.ConcertId, 
@@ -178,6 +183,65 @@ namespace concert_booking_service_csharp.Controllers
             return Ok(concertSummaryDTOs);
         }
 
+        [Authorize(AuthenticationSchemes = "Authentication")]
+        [Authorize(Policy = "UserOnly")]
+        [HttpPost("Bookings")]
+        public ActionResult MakeBooking(BookingRequestDTO bookingRequestDTO)
+        {
+            ClaimsIdentity ci = HttpContext.User.Identities.FirstOrDefault();
+            Claim c = ci.FindFirst("user");
+            string name = c.Value;
+            User user = _repository.GetUserByUserName(name);
 
+            Concert concert = _repository.GetConcertById(bookingRequestDTO.ConcertId);
+            if (concert != null)
+            {
+                ICollection<ConcertDate> concertDates = concert.ConcertDates;
+                List<DateTime> dates = new List<DateTime>();
+                foreach (ConcertDate concertDate in concertDates)
+                {
+                    dates.Add(concertDate.Date);
+                }
+
+                if (dates.Contains(bookingRequestDTO.Date))
+                {
+                    List<Seat> seats = new List<Seat>();
+                    foreach (string seatLabel in bookingRequestDTO.SeatLabels)
+                    {
+                        Seat seat = _repository.GetSeatByDateLabel(bookingRequestDTO.Date, seatLabel);
+                        if (seat == null)
+                        {
+                            return BadRequest("Seat labels does not exist.");
+                        }
+                        seats.Add(seat);
+                    }
+
+                    if (seats.Count == 0)
+                    {
+                        return BadRequest("Seat labels error.");
+                    }
+
+                    Booking booking = new Booking
+                    {
+                        UserId = user.UserId,
+                        ConcertId = concert.ConcertId,
+                        Date = bookingRequestDTO.Date
+                    };
+                    //Booking addedBooking = _repository.AddBooking(booking);
+                    //foreach (Seat seat in seats)
+                    //{
+                    //    seat.BookingId = addedBooking.BookingId;
+                    //    seat.IsBooked = true;
+                    //    _repository.AddSeat(seat);
+                    //}
+
+                    Booking createdBooking = _repository.MakeBooking(booking, seats);
+
+                    return Created($"/concert-service/Bookings/{createdBooking.BookingId}", createdBooking);
+                }
+                return BadRequest("Date does not exist.");
+            }
+            return BadRequest($"Concert {bookingRequestDTO.ConcertId} does not exist.");
+        }
     }
 }
