@@ -278,7 +278,8 @@ namespace concert_booking_service_csharp.Data
 
         public Seat GetSeatByDateLabel(DateTime date, string label)
         {
-            throw new NotImplementedException();
+            Seat seat = _dbContext.Seats.FirstOrDefault(e => e.Date == date && e.Label == label);
+            return seat;
         }
 
         public IEnumerable<Seat> GetSeatsByDateIsBooked(DateTime date, Boolean isBooked)
@@ -299,7 +300,11 @@ namespace concert_booking_service_csharp.Data
 
         public Seat UpdateSeat(Seat seat)
         {
-            throw new NotImplementedException();
+            EntityEntry<Seat> e = _dbContext.Seats.Attach(seat);
+            e.State = EntityState.Modified;
+            Seat s = e.Entity;
+            _dbContext.SaveChanges();
+            return s;
         }
 
         public void DeleteSeat(Seat seat)
@@ -342,6 +347,25 @@ namespace concert_booking_service_csharp.Data
             EntityEntry<User> e = _dbContext.Users.Attach(user);
             e.State = EntityState.Deleted;
             _dbContext.SaveChanges();
+        }
+
+        // Make Booking
+
+        public Booking MakeBooking(Booking booking, List<Seat> seats)
+        {
+            EntityEntry<Booking> bE = _dbContext.Bookings.Add(booking);
+            Booking b = bE.Entity;
+
+            foreach (Seat seat in seats)
+            {
+                seat.BookingId = b.BookingId;
+                seat.IsBooked = true;
+                EntityEntry<Seat> sE = _dbContext.Seats.Attach(seat);
+                sE.State = EntityState.Modified;
+            }
+
+            _dbContext.SaveChanges();
+            return b;
         }
 
         // Authentication
