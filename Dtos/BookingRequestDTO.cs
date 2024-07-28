@@ -9,7 +9,7 @@ namespace concert_booking_service_csharp.Dtos
         [Required]
         public DateTime Date { get; set; }
         [Required]
-        public List<String> SeatLabels { get; set; }
+        public List<string> SeatLabels { get; set; }
 
     }
 }
