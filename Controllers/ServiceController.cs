@@ -1,10 +1,13 @@
 ﻿using concert_booking_service_csharp.Data;
 using concert_booking_service_csharp.Dtos;
+using concert_booking_service_csharp.Enums;
 using concert_booking_service_csharp.Models;
 using concert_booking_service_csharp.Utils;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace concert_booking_service_csharp.Controllers
@@ -126,7 +129,7 @@ namespace concert_booking_service_csharp.Controllers
         }
 
         [HttpGet("Concerts/{id}")]
-        public ActionResult GetConcertById(int id)
+        public ActionResult GetConcertById(long id)
         {
             Concert concert = _repository.GetConcertById(id);
             if (concert != null)
@@ -213,6 +216,10 @@ namespace concert_booking_service_csharp.Controllers
                         {
                             return BadRequest("Seat labels does not exist.");
                         }
+                        if (seat.IsBooked == true)
+                        {
+                            return Forbid("One of the seat is already booked.");
+                        }
                         seats.Add(seat);
                     }
 
@@ -242,6 +249,138 @@ namespace concert_booking_service_csharp.Controllers
                 return BadRequest("Date does not exist.");
             }
             return BadRequest($"Concert {bookingRequestDTO.ConcertId} does not exist.");
+        }
+
+        [Authorize(AuthenticationSchemes = "Authentication")]
+        [Authorize(Policy = "UserOnly")]
+        [HttpGet("Bookings")]
+        public ActionResult GetUserAllBookings()
+        {
+            ClaimsIdentity ci = HttpContext.User.Identities.FirstOrDefault();
+            Claim c = ci.FindFirst("user");
+            string name = c.Value;
+            User user = _repository.GetUserByUserName(name);
+
+            IEnumerable<Booking> bookings = _repository.GetBookingsByUserId(user.UserId);
+            List<BookingDTO> bookingDTOs = new List<BookingDTO>();
+            foreach (Booking booking in bookings)
+            {
+                List<SeatDTO> seatDTOs = new List<SeatDTO>();
+                foreach (Seat seat in booking.Seats)
+                {
+                    SeatDTO seatDTO = new SeatDTO
+                    {
+                        Label = seat.Label,
+                        Price = seat.Cost
+                    };
+                    seatDTOs.Add(seatDTO);
+                }
+
+                BookingDTO bookingDTO = new BookingDTO
+                {
+                    ConcertId = booking.ConcertId,
+                    Date = booking.Date,
+                    Seats = seatDTOs
+                };
+                bookingDTOs.Add(bookingDTO);
+            }
+            return Ok(bookingDTOs);
+        }
+
+        [Authorize(AuthenticationSchemes = "Authentication")]
+        [Authorize(Policy = "UserOnly")]
+        [HttpGet("Bookings/{id}")]
+        public ActionResult GetBookingById(long bookingId)
+        {
+            ClaimsIdentity ci = HttpContext.User.Identities.FirstOrDefault();
+            Claim c = ci.FindFirst("user");
+            string name = c.Value;
+            User user = _repository.GetUserByUserName(name);
+
+            Booking booking = _repository.GetBookingById(bookingId);
+            if (booking != null)
+            {
+                if (booking.User == user)
+                {
+                    List<SeatDTO> seatDTOs = new List<SeatDTO>();
+                    foreach (Seat seat in booking.Seats)
+                    {
+                        SeatDTO seatDTO = new SeatDTO
+                        {
+                            Label = seat.Label,
+                            Price = seat.Cost
+                        };
+                        seatDTOs.Add(seatDTO);
+                    }
+
+                    BookingDTO bookingDTO = new BookingDTO
+                    {
+                        ConcertId = booking.ConcertId,
+                        Date = booking.Date,
+                        Seats = seatDTOs
+                    };
+                    return Ok(bookingDTO);
+                }
+                return Unauthorized($"You are not the owner of the booking {bookingId}.");
+            }
+            return BadRequest($"Booking {bookingId} does not exist.");
+        }
+
+        [HttpGet("seats/{date}")]
+        public ActionResult GetSeatsByDateStatus(string date, [FromQuery] string status)
+        {
+            try
+            {
+                DateTime dateTime = DateTime.Parse(date);
+                BookingStatus bookingStatus = (BookingStatus)Enum.Parse(typeof(BookingStatus), status);
+                if (bookingStatus == BookingStatus.Booked || bookingStatus == BookingStatus.Unbooked)
+                {
+                    Boolean isBooked;
+                    if (bookingStatus == BookingStatus.Booked)
+                    {
+                        isBooked = true;
+                    }
+                    else
+                    {
+                        isBooked = false;
+                    }
+
+                    IEnumerable<Seat> seats = _repository.GetSeatsByDateIsBooked(dateTime, isBooked);
+                    List<SeatDTO> seatDTOs = new List<SeatDTO>();
+                    foreach (Seat seat in seats)
+                    {
+                        SeatDTO seatDTO = new SeatDTO { Label = seat.Label, Price = seat.Cost };
+                        seatDTOs.Add(seatDTO);
+                    }
+                    return Ok(seatDTOs);
+                }
+                else if (bookingStatus == BookingStatus.Any)
+                {
+                    IEnumerable<Seat> seats = _repository.GetSeatsByDate(dateTime);
+                    List<SeatDTO> seatDTOs = new List<SeatDTO>();
+                    foreach (Seat seat in seats)
+                    {
+                        SeatDTO seatDTO = new SeatDTO { Label = seat.Label, Price = seat.Cost };
+                        seatDTOs.Add(seatDTO);
+                    }
+                    return Ok(seatDTOs);
+                }
+                else
+                {
+                    return BadRequest("Status error.");
+                }
+
+            }
+            catch (Exception e) when (
+            e is ArgumentNullException || 
+            e is ArgumentException || 
+            e is FormatException || 
+            e is OverflowException || 
+            e is InvalidOperationException) 
+            {
+                return BadRequest("Date and / or status error.");
+            }
+
         }
     }
 }
