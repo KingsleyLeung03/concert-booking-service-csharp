@@ -21,4 +21,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Medias\Images\Concerts\" />
+    <Folder Include="Medias\Images\Performers\" />
+  </ItemGroup>
+
 </Project>
