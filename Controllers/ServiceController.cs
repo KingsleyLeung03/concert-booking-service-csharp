@@ -33,7 +33,7 @@ namespace concert_booking_service_csharp.Controllers
                 PasswordHasherUtil.CreatePasswordHash(input.Password, out byte[] passwordHash, out byte[] passwordSalt);
                 User user = new User { UserName = input.UserName, PasswordHash = passwordHash, PasswordSalt = passwordSalt, Version = 1 };
                 User addedUser = _repository.AddUser(user);
-                return Ok("User successfully registered.");
+                return Ok($"User {input.UserName} successfully registered.");
             }
             else
             {
