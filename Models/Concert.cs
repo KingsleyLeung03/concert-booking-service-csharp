@@ -17,10 +17,10 @@ namespace concert_booking_service_csharp.Models
         public string Blurb { get; set; }
 
         // Navigation
-        public ICollection<ConcertDate> ConcertDates { get; set; }
+        public virtual ICollection<ConcertDate> ConcertDates { get; set; }
 
         // Navigation
-        public ICollection<Performer> Performers { get; set; }
+        public virtual ICollection<Performer> Performers { get; set; }
 
     }
 }

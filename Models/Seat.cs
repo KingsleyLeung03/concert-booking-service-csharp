@@ -21,6 +21,6 @@ namespace concert_booking_service_csharp.Models
         public long? BookingId { get; set; }
 
         // Navigation
-        public Booking? Booking { get; set; }
+        public virtual Booking? Booking { get; set; }
     }
 }

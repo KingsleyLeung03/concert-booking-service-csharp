@@ -20,7 +20,7 @@ namespace concert_booking_service_csharp.Models
         public string Blurb { get; set; }
 
         // Navigation
-        public ICollection<Concert> Concerts { get; set; }
+        public virtual ICollection<Concert> Concerts { get; set; }
 
     }
 }

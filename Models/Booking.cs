@@ -21,10 +21,10 @@ namespace concert_booking_service_csharp.Models
         public User User { get; set; }
 
         // Navigation
-        public Concert Concert { get; set; }
+        public virtual Concert Concert { get; set; }
 
         // Navigation
-        public ICollection<Seat> Seats { get; set; }
+        public virtual ICollection<Seat> Seats { get; set; }
 
     }
 }

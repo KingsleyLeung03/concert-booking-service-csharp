@@ -124,6 +124,7 @@ namespace concert_booking_service_csharp.Controllers
                     Dates = dates,
                     Performers = performerDTOs
                 };
+                concertDTOs.Add(concertDTO);
             }
             return Ok(concertDTOs);
         }

@@ -15,5 +15,29 @@ namespace concert_booking_service_csharp.Data
         public DbSet<Seat> Seats { get; set; }
         public DbSet<User> Users { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Booking>()
+                .Navigation(s => s.User)
+                .AutoInclude();
+
+            modelBuilder.Entity<Booking>()
+                .Navigation(s => s.Concert)
+                .AutoInclude();
+
+            modelBuilder.Entity<Booking>()
+                .Navigation(s => s.Seats)
+                .AutoInclude();
+
+            modelBuilder.Entity<Concert>()
+                .Navigation(s => s.ConcertDates)
+                .AutoInclude();
+
+            modelBuilder.Entity<Concert>()
+                .Navigation(s => s.Performers)
+                .AutoInclude();
+
+        }
+
     }
 }
