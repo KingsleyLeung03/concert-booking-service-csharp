@@ -291,14 +291,14 @@ namespace concert_booking_service_csharp.Controllers
         [Authorize(AuthenticationSchemes = "Authentication")]
         [Authorize(Policy = "UserOnly")]
         [HttpGet("Bookings/{id}")]
-        public ActionResult GetBookingById(long bookingId)
+        public ActionResult GetBookingById(long id)
         {
             ClaimsIdentity ci = HttpContext.User.Identities.FirstOrDefault();
             Claim c = ci.FindFirst("user");
             string name = c.Value;
             User user = _repository.GetUserByUserName(name);
 
-            Booking booking = _repository.GetBookingById(bookingId);
+            Booking booking = _repository.GetBookingById(id);
             if (booking != null)
             {
                 if (booking.User == user)
@@ -322,9 +322,9 @@ namespace concert_booking_service_csharp.Controllers
                     };
                     return Ok(bookingDTO);
                 }
-                return Unauthorized($"You are not the owner of the booking {bookingId}.");
+                return Unauthorized($"You are not the owner of the booking {id}.");
             }
-            return BadRequest($"Booking {bookingId} does not exist.");
+            return BadRequest($"Booking {id} does not exist.");
         }
 
         [HttpGet("seats/{date}")]
