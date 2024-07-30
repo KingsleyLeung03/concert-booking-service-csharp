@@ -8,7 +8,7 @@ namespace concert_booking_service_csharp.Dtos
         public long PerformerId { get; set; }
         public string Name { get; set; }
         public string ImageName { get; set; }
-        public Genre Genre { get; set; }
+        public string Genre { get; set; }
         public string Blurb { get; set; }
 
         public override bool Equals(object obj)

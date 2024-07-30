@@ -61,7 +61,7 @@ namespace concert_booking_service_csharp.Controllers
                     PerformerId = performer.PerformerId, 
                     Name = performer.Name, 
                     ImageName = performer.ImageName, 
-                    Genre = performer.Genre, 
+                    Genre = performer.Genre.ToString(), 
                     Blurb = performer.Blurb 
                 });
             }
@@ -79,7 +79,7 @@ namespace concert_booking_service_csharp.Controllers
                     PerformerId = performer.PerformerId, 
                     Name = performer.Name, 
                     ImageName = performer.ImageName, 
-                    Genre = performer.Genre, 
+                    Genre = performer.Genre.ToString(), 
                     Blurb = performer.Blurb 
                 };
                 return Ok(performerDTO);
@@ -110,7 +110,7 @@ namespace concert_booking_service_csharp.Controllers
                         PerformerId = performer.PerformerId,
                         Name = performer.Name,
                         ImageName = performer.ImageName,
-                        Genre = performer.Genre,
+                        Genre = performer.Genre.ToString(),
                         Blurb = performer.Blurb
                     });
                 }
@@ -150,7 +150,7 @@ namespace concert_booking_service_csharp.Controllers
                         PerformerId = performer.PerformerId, 
                         Name = performer.Name, 
                         ImageName = performer.ImageName, 
-                        Genre = performer.Genre, 
+                        Genre = performer.Genre.ToString(), 
                         Blurb = performer.Blurb 
                     });
                 }
