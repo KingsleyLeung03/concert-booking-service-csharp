@@ -209,22 +209,22 @@ namespace concert_booking_service_csharp.Controllers
 
                 if (dates.Contains(bookingRequestDTO.Date))
                 {
-                    List<Seat> seats = new List<Seat>();
+                    //List<Seat> seats = new List<Seat>();
                     foreach (string seatLabel in bookingRequestDTO.SeatLabels)
                     {
                         Seat seat = _repository.GetSeatByDateLabel(bookingRequestDTO.Date, seatLabel);
                         if (seat == null)
                         {
-                            return BadRequest("Seat labels does not exist.");
+                            return BadRequest("One of the seat label does not exist.");
                         }
                         if (seat.IsBooked == true)
                         {
                             return Forbid("One of the seat is already booked.");
                         }
-                        seats.Add(seat);
+                        //seats.Add(seat);
                     }
 
-                    if (seats.Count == 0)
+                    if (bookingRequestDTO.SeatLabels.Count == 0)
                     {
                         return BadRequest("Seat labels error.");
                     }
@@ -243,9 +243,26 @@ namespace concert_booking_service_csharp.Controllers
                     //    _repository.AddSeat(seat);
                     //}
 
-                    Booking createdBooking = _repository.MakeBooking(booking, seats);
+                    Booking createdBooking = _repository.MakeBooking(booking, bookingRequestDTO.SeatLabels);
+                    List<SeatDTO> seatDTOs = new List<SeatDTO>();
+                    foreach (Seat seat in booking.Seats)
+                    {
+                        SeatDTO seatDTO = new SeatDTO
+                        {
+                            Label = seat.Label,
+                            Price = seat.Cost
+                        };
+                        seatDTOs.Add(seatDTO);
+                    }
 
-                    return Created($"/concert-service/Bookings/{createdBooking.BookingId}", createdBooking);
+                    BookingDTO bookingDTO = new BookingDTO
+                    {
+                        ConcertId = createdBooking.ConcertId,
+                        Date = createdBooking.Date,
+                        Seats = seatDTOs
+                    };
+
+                    return Created($"/concert-service/Bookings/{createdBooking.BookingId}", bookingDTO);
                 }
                 return BadRequest("Date does not exist.");
             }
@@ -327,7 +344,7 @@ namespace concert_booking_service_csharp.Controllers
             return BadRequest($"Booking {id} does not exist.");
         }
 
-        [HttpGet("seats/{date}")]
+        [HttpGet("Seats/{date}")]
         public ActionResult GetSeatsByDateStatus(string date, [FromQuery] string status)
         {
             try
@@ -368,7 +385,7 @@ namespace concert_booking_service_csharp.Controllers
                 }
                 else
                 {
-                    return BadRequest("Status error.");
+                    return BadRequest("Status error. \nStatus should be one of them: Unbooked, Booked, Any.");
                 }
 
             }
@@ -379,7 +396,9 @@ namespace concert_booking_service_csharp.Controllers
             e is OverflowException || 
             e is InvalidOperationException) 
             {
-                return BadRequest("Date and / or status error.");
+                return BadRequest("Date and / or status error. \n" +
+                    "Date should be in this format: YYYY-MM-DDTHH:MM:SS. \n" +
+                    "Status should be one of them: Unbooked, Booked, Any.");
             }
 
         }

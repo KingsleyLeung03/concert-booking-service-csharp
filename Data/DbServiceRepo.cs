@@ -1,10 +1,7 @@
 ﻿using concert_booking_service_csharp.Models;
 using concert_booking_service_csharp.Utils;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Xml.Linq;
 
 namespace concert_booking_service_csharp.Data
 {
@@ -351,21 +348,62 @@ namespace concert_booking_service_csharp.Data
 
         // Make Booking
 
-        public Booking MakeBooking(Booking booking, List<Seat> seats)
+        public Booking MakeBooking(Booking booking, List<string> seatLabels)
         {
-            EntityEntry<Booking> bE = _dbContext.Bookings.Add(booking);
-            Booking b = bE.Entity;
+            //EntityEntry<Booking> bE = _dbContext.Bookings.Add(booking);
+            //Booking b = bE.Entity;
 
-            foreach (Seat seat in seats)
+            //foreach (string seatLabel in seatLabels)
+            //{
+            //    Seat seat = _dbContext.Seats.FirstOrDefault(e => e.Date == booking.Date && e.Label == seatLabel);
+            //    seat.BookingId = b.BookingId;
+            //    seat.IsBooked = true;
+            //    EntityEntry<Seat> sE = _dbContext.Seats.Attach(seat);
+            //    sE.State = EntityState.Modified;
+            //}
+
+            //_dbContext.SaveChanges();
+            //return b;
+
+            using (var transaction = _dbContext.Database.BeginTransaction())
             {
-                seat.BookingId = b.BookingId;
-                seat.IsBooked = true;
-                EntityEntry<Seat> sE = _dbContext.Seats.Attach(seat);
-                sE.State = EntityState.Modified;
-            }
+                try
+                {
+                    // Add the booking and save changes to get the BookingId
+                    EntityEntry<Booking> bE = _dbContext.Bookings.Add(booking);
+                    _dbContext.SaveChanges(); // Save here to ensure BookingId is generated
+                    Booking b = bE.Entity;
 
-            _dbContext.SaveChanges();
-            return b;
+                    // Create a savepoint after saving the booking
+                    transaction.CreateSavepoint("AfterBookingSave");
+
+                    // Fetch all relevant seats in a single query
+                    var seats = _dbContext.Seats
+                        .Where(e => e.Date == booking.Date && seatLabels.Contains(e.Label))
+                        .ToList();
+
+                    foreach (var seat in seats)
+                    {
+                        if (seat != null)
+                        {
+                            seat.BookingId = b.BookingId;
+                            seat.IsBooked = true;
+                            _dbContext.Entry(seat).State = EntityState.Modified;
+                        }
+                    }
+
+                    _dbContext.SaveChanges();
+                    transaction.Commit();
+                    return b;
+                }
+                catch (Exception)
+                {
+                    // Rollback to the savepoint if updating seats fails
+                    transaction.RollbackToSavepoint("AfterBookingSave");
+                    transaction.Rollback();
+                    throw;
+                }
+            }
         }
 
         // Authentication

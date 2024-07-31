@@ -74,7 +74,7 @@ namespace concert_booking_service_csharp.Data
         void DeleteUser(User user);
 
         // Make Booking
-        Booking MakeBooking(Booking booking, List<Seat> seats);
+        Booking MakeBooking(Booking booking, List<string> seatLabels);
 
         // Authentication
         bool ValidUserLogin(string userName, string password);
