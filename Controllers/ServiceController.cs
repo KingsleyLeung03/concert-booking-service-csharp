@@ -219,7 +219,7 @@ namespace concert_booking_service_csharp.Controllers
                         }
                         if (seat.IsBooked == true)
                         {
-                            return Forbid("One of the seat is already booked.");
+                            return StatusCode(StatusCodes.Status403Forbidden, "One of the seat is already booked.");
                         }
                         //seats.Add(seat);
                     }
