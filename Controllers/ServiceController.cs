@@ -215,11 +215,11 @@ namespace concert_booking_service_csharp.Controllers
                         Seat seat = _repository.GetSeatByDateLabel(bookingRequestDTO.Date, seatLabel);
                         if (seat == null)
                         {
-                            return BadRequest("One of the seat label does not exist.");
+                            return BadRequest("One of the seat labels does not exist.");
                         }
                         if (seat.IsBooked == true)
                         {
-                            return StatusCode(StatusCodes.Status403Forbidden, "One of the seat is already booked.");
+                            return StatusCode(StatusCodes.Status403Forbidden, "One of the seats is already booked.");
                         }
                         //seats.Add(seat);
                     }
