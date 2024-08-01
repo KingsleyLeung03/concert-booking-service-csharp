@@ -45,7 +45,7 @@ Clients can see concert and performer information and ask about available seats,
 -- If the requested `Booking` is under the existing `User`, the status code should be 200.  
 -- If the requested `Booking` is not found, the status code should be 400.  
 -- If the requested `Booking` is not under the existing `User`, or there's no existing `User`, the status code should be 401.  
-- `GET /concert-service/Seats/{date}`.  
+- `GET /concert-service/Seats/{date}?status={status}`. Retrieves all seats that match the specified date and specified booking status. The date should be in this format: `YYYY-MM-DDTHH:MM:SS`. The booking status should be one of them: `Unbooked`, `Booked`, `Any`. The HTTP response message should have a status code of either 200 or 400, depending on whether the date and booking status format are correct.  
 
 - ... more will be added later.
 
