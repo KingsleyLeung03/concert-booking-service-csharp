@@ -26,4 +26,10 @@
     <Folder Include="Medias\Images\Performers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ServiceDatabase.sqlite">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
