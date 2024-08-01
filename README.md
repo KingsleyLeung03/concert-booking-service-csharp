@@ -1,5 +1,5 @@
 # Concert Booking Service  
-Kingsley Leung  
+By Kingsley Leung (Zihong Liang)  
 
 A concert booking service, using C# and ASP.NET.  
 
@@ -55,9 +55,9 @@ This diagram is created by DbVisualizer from DbVis Software.
 
 ## Test
 Two users are already created for testing.  
-- User 1
+- User 1  
 UserName: `testuser`  
 Password: `pa55word`  
-- User 2
+- User 2  
 UserName: `testuser2`  
 Password: `pa55word`  
