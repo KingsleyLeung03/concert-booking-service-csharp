@@ -1,10 +1,7 @@
 ﻿using concert_booking_service_csharp.Models;
 using concert_booking_service_csharp.Utils;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Xml.Linq;
 
 namespace concert_booking_service_csharp.Data
 {
@@ -278,7 +275,8 @@ namespace concert_booking_service_csharp.Data
 
         public Seat GetSeatByDateLabel(DateTime date, string label)
         {
-            throw new NotImplementedException();
+            Seat seat = _dbContext.Seats.FirstOrDefault(e => e.Date == date && e.Label == label);
+            return seat;
         }
 
         public IEnumerable<Seat> GetSeatsByDateIsBooked(DateTime date, Boolean isBooked)
@@ -299,7 +297,11 @@ namespace concert_booking_service_csharp.Data
 
         public Seat UpdateSeat(Seat seat)
         {
-            throw new NotImplementedException();
+            EntityEntry<Seat> e = _dbContext.Seats.Attach(seat);
+            e.State = EntityState.Modified;
+            Seat s = e.Entity;
+            _dbContext.SaveChanges();
+            return s;
         }
 
         public void DeleteSeat(Seat seat)
@@ -342,6 +344,66 @@ namespace concert_booking_service_csharp.Data
             EntityEntry<User> e = _dbContext.Users.Attach(user);
             e.State = EntityState.Deleted;
             _dbContext.SaveChanges();
+        }
+
+        // Make Booking
+
+        public Booking MakeBooking(Booking booking, List<string> seatLabels)
+        {
+            //EntityEntry<Booking> bE = _dbContext.Bookings.Add(booking);
+            //Booking b = bE.Entity;
+
+            //foreach (string seatLabel in seatLabels)
+            //{
+            //    Seat seat = _dbContext.Seats.FirstOrDefault(e => e.Date == booking.Date && e.Label == seatLabel);
+            //    seat.BookingId = b.BookingId;
+            //    seat.IsBooked = true;
+            //    EntityEntry<Seat> sE = _dbContext.Seats.Attach(seat);
+            //    sE.State = EntityState.Modified;
+            //}
+
+            //_dbContext.SaveChanges();
+            //return b;
+
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    // Add the booking and save changes to get the BookingId
+                    EntityEntry<Booking> bE = _dbContext.Bookings.Add(booking);
+                    _dbContext.SaveChanges(); // Save here to ensure BookingId is generated
+                    Booking b = bE.Entity;
+
+                    // Create a savepoint after saving the booking
+                    transaction.CreateSavepoint("AfterBookingSave");
+
+                    // Fetch all relevant seats in a single query
+                    var seats = _dbContext.Seats
+                        .Where(e => e.Date == booking.Date && seatLabels.Contains(e.Label))
+                        .ToList();
+
+                    foreach (var seat in seats)
+                    {
+                        if (seat != null)
+                        {
+                            seat.BookingId = b.BookingId;
+                            seat.IsBooked = true;
+                            _dbContext.Entry(seat).State = EntityState.Modified;
+                        }
+                    }
+
+                    _dbContext.SaveChanges();
+                    transaction.Commit();
+                    return b;
+                }
+                catch (Exception)
+                {
+                    // Rollback to the savepoint if updating seats fails
+                    transaction.RollbackToSavepoint("AfterBookingSave");
+                    transaction.Rollback();
+                    throw;
+                }
+            }
         }
 
         // Authentication

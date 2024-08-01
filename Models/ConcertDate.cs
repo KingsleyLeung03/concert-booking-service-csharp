@@ -15,6 +15,6 @@ namespace concert_booking_service_csharp.Models
         public DateTime Date { get; set; }
 
         // Navigation
-        public Concert Concert { get; set; }
+        public virtual Concert Concert { get; set; }
     }
 }
